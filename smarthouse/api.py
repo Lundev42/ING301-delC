@@ -59,24 +59,40 @@ def get_floor(fid: int) -> Response:
 @app.get("/smarthouse/floor/{fid}/room")
 def get_rooms(fid: int) -> list[RoomInfo]:
 
-    # TODO
+    rooms = []
 
-    return []
+    for f in smarthouse.get_floors():
+        print(f)
+        if f.level == fid:
+            for r in f.rooms:
+                rooms.append(RoomInfo.from_obj(r))
+            return JSONResponse(content=jsonable_encoder(rooms))
+
+    return Response(status_code=404)
 
 
 @app.get("/smarthouse/floor/{fid}/room/{rid}")
 def get_room(fid: int, rid: int) -> Response:
 
-    # TODO
+   for f in smarthouse.get_floors():
+        if f.level == fid:
+            for r in f.rooms:
+                if r.rid == rid:
+                    return JSONResponse(content=jsonable_encoder(RoomInfo.from_obj(r)))
+    
+        return Response(status_code=404)
 
-    return Response(status_code=404)
 
 @app.get("/smarthouse/device")
 def get_devices() -> list[DeviceInfo]:
 
-    # TODO
+    devices = []
+    if smarthouse.get_devices():
+        for d in smarthouse.get_devices():
+            devices.append(DeviceInfo.from_obj(d))    
+        return JSONResponse(content=jsonable_encoder(devices))
 
-    return []
+    return Response(status_code=404)
 
 @app.get("/smarthouse/device/{uuid}")
 def get_device(uuid: str) -> Response:

@@ -49,18 +49,32 @@ class RoomInfo(BaseModel):
     @staticmethod
     def from_obj(room: Room) -> RoomInfo:
 
-        # TODO
-        pass
+        # Fordi devices er en kun liste med str, velger jeg å hente device-id (som er en unik
+        # identifikator) fremfor device_name eller device_type. Dersom mere info skal være med her
+        # skulle listen vært en liste med dto-objekter og ikke strenger. 
+
+        devices = []    
+        for d in room.devices:
+            devices.append(d.id)
+
+        # Alternativt:
+        # for i in range (len(room.devices)):
+        #     devices.append(room.devices[i].id)
+
+        return RoomInfo(rid=room.rid, room_size=room.room_size, room_name=room.room_name, 
+                        floor=room.floor.level, devices=devices)
 
 class DeviceInfo(BaseModel):
 
-    # TODO
+    id: str
+    model_name: str
+    supplier: str
+    device_type: str
 
     @staticmethod
     def from_obj(device: Device) -> DeviceInfo:
-
-        # TODO
-        pass
+        return DeviceInfo(id=device.id, model_name=device.model_name, 
+                          supplier=device.supplier, device_type=device.device_type)
 
 class ActuatorStateInfo(BaseModel):
 
