@@ -133,14 +133,28 @@ def delete_measurement(uuid: str) -> Response:
 @app.get("/smarthouse/actuator/{uuid}/state")
 def read_actuator_state(uuid: str) -> Response:
 
-    # TODO
+    for d in smarthouse.get_devices():
+        if d.id == uuid:
+            if d.state:
+                obj = {"state":"on"}
+            else:
+                obj = {"state":"off"}
+            return JSONResponse(content=jsonable_encoder(obj))
 
     return Response(status_code=404)
 
 @app.put("/smarthouse/actuator/{uuid}/state")
 def update_sensor_state(uuid: str, target_state: ActuatorStateInfo) -> Response:
 
-    # TODO
+    for d in smarthouse.get_devices():
+        if d.id == uuid:
+            if target_state == "on":
+                d.turn_on()
+                obj = {"state": "on"}
+            else:
+                d.turn_off()
+                obj = {"state": "off"}
+            return JSONResponse(content=jsonable_encoder(obj))
 
     return Response(status_code=404)
 

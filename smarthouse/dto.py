@@ -78,6 +78,5 @@ class DeviceInfo(BaseModel):
 
 class ActuatorStateInfo(BaseModel):
 
-    # TODO
-    pass
-
+    # Dette er et objekt med èn attributt (str), ingen metoder
+    state: str

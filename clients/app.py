@@ -37,7 +37,16 @@ class SmartHouseApp:
         the current state of the light bulb actuator
         """
 
-        # TODO START
+        url = common.BASE_URL + f"actuator/{self.actuator_did}/state"
+
+        payload = {new_state}
+        headers = {}
+
+        response = requests.request("PUT", url, headers=headers, data=payload)
+
+        actuator_state = common.ActuatorState.from_json_str(response.text)
+
+        return actuator_state.state
 
         pass
 
