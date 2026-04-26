@@ -144,18 +144,21 @@ def read_actuator_state(uuid: str) -> Response:
     return Response(status_code=404)
 
 @app.put("/smarthouse/actuator/{uuid}/state")
-def update_sensor_state(uuid: str, target_state: ActuatorStateInfo) -> Response:
-
+def update_actuator_state(uuid: str, target_state: ActuatorStateInfo) -> Response:
+    print(target_state.state + " " + uuid)
     for d in smarthouse.get_devices():
         if d.id == uuid:
-            if target_state == "on":
+            print(uuid)
+            if target_state.state == "on":
                 d.turn_on()
-                obj = {"state": "on"}
+                print ("on")
             else:
                 d.turn_off()
-                obj = {"state": "off"}
-            return JSONResponse(content=jsonable_encoder(obj))
+                print ("off")
 
+                
+            return Response(status_code=200)      #200=HTTP OK response
+             
     return Response(status_code=404)
 
 if __name__ == '__main__':

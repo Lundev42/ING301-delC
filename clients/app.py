@@ -36,21 +36,14 @@ class SmartHouseApp:
         This method sends a PUT request to the cloud state to obtain
         the current state of the light bulb actuator
         """
-
+        
         url = common.BASE_URL + f"actuator/{self.actuator_did}/state"
 
-        payload = {new_state}
+        payload = {"state": new_state}
         headers = {}
 
-        response = requests.request("PUT", url, headers=headers, data=payload)
+        return requests.request("PUT", url, headers=headers, data=payload)
 
-        actuator_state = common.ActuatorState.from_json_str(response.text)
-
-        return actuator_state.state
-
-        pass
-
-        # TODO END
 
     def get_temperature(self) -> float:
         """
