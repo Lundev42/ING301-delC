@@ -131,7 +131,10 @@ def update_sensor_measurement(uuid: str, measurement: Measurement) -> Response:
 @app.delete("/smarthouse/sensor/{uuid}/current")
 def delete_measurement(uuid: str) -> Response:
 
-    # TODO
+    for d in smarthouse.get_devices():
+        if isinstance(d, Sensor) and d.id == uuid:
+            d.current = None
+            return Response(status_code=200)
 
     return Response(status_code=404)
 
