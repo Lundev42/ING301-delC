@@ -1,3 +1,4 @@
+import json
 import time
 import math
 import requests
@@ -45,7 +46,16 @@ class SensorClient:
         logging.info(f"Sensor client {self.did} update starting")
         response = None
 
-        # TODO
+        url = f"http://localhost:8000/smarthouse/sensor/{self.did}/current"     # URL for PUT request to update sensor measurement
+        response = requests.put(url, json={
+            "timestamp": m.timestamp,
+            "value": m.value,
+            "unit": m.unit
+        })                                                                      # Sends the PUT request with the measurement data as JSON
+        if response.status_code == 200:
+            logging.info(f"Sensor client {self.did} update successful")
+        else:
+            logging.error(f"Sensor client {self.did} update failed with status code {response.status_code}")
         return response
 
 
