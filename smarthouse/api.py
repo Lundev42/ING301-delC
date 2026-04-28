@@ -97,7 +97,9 @@ def get_devices() -> list[DeviceInfo]:
 @app.get("/smarthouse/device/{uuid}")
 def get_device(uuid: str) -> Response:
 
-    # TODO
+    for d in get_devices(): 
+        if d.devices == uuid:
+            return JSONResponse(content=jsonable_encoder(DeviceInfo.from_obj(d)))
 
     return Response(status_code=404)
 
