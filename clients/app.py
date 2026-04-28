@@ -42,7 +42,7 @@ class SmartHouseApp:
         payload = {"state": new_state}
         headers = {}
 
-        return requests.request("PUT", url, headers=headers, data=payload)
+        return requests.request("PUT", url, headers=headers, json=payload)
 
 
     def get_temperature(self) -> float:
@@ -51,13 +51,19 @@ class SmartHouseApp:
         the current temperature recorded for the temperature sensor
         """
 
-        # TODO START
+        url = common.BASE_URL + f"sensor/{self.sensor_did}/current"    # URL for GET request to retrieve current temperature measurement for the sensor
 
-        pass
+        response = requests.get(url)
 
-        # TODO END
+        if response.status_code == 200:
+            measurement = common.SensorMeasurement.from_json_str(response.text) # Deserializes the JSON response into a SensorMeasurement object
+            return float(measurement.value)
+        
+        print(response.status_code)
+        return None
 
-    def main(self):
+
+    def main(self): # Styre smarthus via terminalen ved å sende forespørsler til skyen for å hente og oppdatere tilstanden til lyspæren og temperaturen
 
         is_active = True
 
