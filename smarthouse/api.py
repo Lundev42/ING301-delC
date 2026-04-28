@@ -7,7 +7,7 @@ from fastapi.encoders import jsonable_encoder
 
 from tests.demo_house import DEMO_HOUSE
 
-from smarthouse.domain import Actuator, Measurement
+from smarthouse.domain import Actuator, Measurement, Sensor
 from smarthouse.dto import SmartHouseInfo, FloorInfo, RoomInfo, DeviceInfo, ActuatorStateInfo
 
 from pathlib import Path
@@ -97,8 +97,8 @@ def get_devices() -> list[DeviceInfo]:
 @app.get("/smarthouse/device/{uuid}")
 def get_device(uuid: str) -> Response:
 
-    for d in get_devices(): 
-        if d.devices == uuid:
+    for d in smarthouse.get_devices(): 
+        if d.id == uuid:
             return JSONResponse(content=jsonable_encoder(DeviceInfo.from_obj(d)))
 
     return Response(status_code=404)
@@ -110,15 +110,22 @@ def get_device(uuid: str) -> Response:
 @app.get("/smarthouse/sensor/{uuid}/current")
 def read_measurement(uuid: str) -> Response:
 
-    # TODO
+    for d in smarthouse.get_devices():
+        if isinstance(d, Sensor) and d.id == uuid: # Sjekker at d er en Sensor og at id matcher uuid
+            measurement = d.get_current()
+            if measurement is not None:
+                return JSONResponse(content=jsonable_encoder(measurement))
+            return Response(status_code=404)
 
     return Response(status_code=404)
 
 @app.put("/smarthouse/sensor/{uuid}/current")
 def update_sensor_measurement(uuid: str, measurement: Measurement) -> Response:
 
-    # TODO
-
+    for d in smarthouse.get_devices():
+        if isinstance(d, Sensor) and d.id == uuid: # Sjekker at d er en Sensor og at id matcher uuid
+            d.set_current(measurement)
+            return JSONResponse(content=jsonable_encoder(measurement))
     return Response(status_code=404)
 
 @app.delete("/smarthouse/sensor/{uuid}/current")
