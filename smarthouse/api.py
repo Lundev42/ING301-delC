@@ -60,9 +60,7 @@ def get_floor(fid: int) -> Response:
 def get_rooms(fid: int) -> list[RoomInfo]:
 
     rooms = []
-
     for f in smarthouse.get_floors():
-        print(f)
         if f.level == fid:
             for r in f.rooms:
                 rooms.append(RoomInfo.from_obj(r))
@@ -87,9 +85,9 @@ def get_room(fid: int, rid: int) -> Response:
 def get_devices() -> list[DeviceInfo]:
 
     devices = []
-    if smarthouse.get_devices():
-        for d in smarthouse.get_devices():
-            devices.append(DeviceInfo.from_obj(d))    
+    for d in smarthouse.get_devices():
+        devices.append(DeviceInfo.from_obj(d))    
+    if len(devices) > 0:
         return JSONResponse(content=jsonable_encoder(devices))
 
     return Response(status_code=404)
@@ -115,7 +113,6 @@ def read_measurement(uuid: str) -> Response:
             measurement = d.get_current()
             if measurement is not None:
                 return JSONResponse(content=jsonable_encoder(measurement))
-            return Response(status_code=404)
 
     return Response(status_code=404)
 
@@ -146,7 +143,7 @@ def delete_measurement(uuid: str) -> Response:
 def read_actuator_state(uuid: str) -> Response:
 
     for d in smarthouse.get_devices():
-        if d.id == uuid:
+        if isinstance(d, Actuator) and d.id == uuid:
             if d.state:
                 obj = {"state":"on"}
             else:
@@ -157,17 +154,13 @@ def read_actuator_state(uuid: str) -> Response:
 
 @app.put("/smarthouse/actuator/{uuid}/state")
 def update_actuator_state(uuid: str, target_state: ActuatorStateInfo) -> Response:
-    print(target_state.state + " " + uuid)
+    
     for d in smarthouse.get_devices():
-        if d.id == uuid:
-            print(uuid)
+        if isinstance(d, Actuator) and d.id == uuid:
             if target_state.state == "on":
                 d.turn_on()
-                print ("on")
             else:
                 d.turn_off()
-                print ("off")
-
                 
             return Response(status_code=200)      #200=HTTP OK response
              

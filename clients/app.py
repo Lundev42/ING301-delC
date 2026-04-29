@@ -59,7 +59,6 @@ class SmartHouseApp:
             measurement = common.SensorMeasurement.from_json_str(response.text) # Deserializes the JSON response into a SensorMeasurement object
             return float(measurement.value)
         
-        print(response.status_code)
         return None
 
 
