@@ -11,6 +11,7 @@ class SensorMeasurement:
     Class representing measurements exchanged between temperature sensor client
     and cloud service in Json format
     """
+     # check 
 
     def __init__(self, timestamp, value, unit):
         self.timestamp = timestamp
