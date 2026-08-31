@@ -20,7 +20,7 @@ if not (Path.cwd() / "www").exists():
     os.chdir(Path.cwd().parent)
 if (Path.cwd() / "www").exists():
     # http://localhost:8000/welcome/index.html
-    app.mount("/static", StaticFiles(directory="www"), name="static")
+    app.mount("/static", StaticFiles(directory="www"), name="static") # Mounts the "www" directory as a static file directory at the "/static" URL path
 
 # http://localhost:8000/ -> welcome page
 @app.get("/")
@@ -107,7 +107,7 @@ def get_device(uuid: str) -> Response:
 # API endpoints for sensors resources
 #
 
-@app.get("/smarthouse/sensor/{uuid}/current")
+@app.get("/smarthouse/sensor/{uuid}/current")   # Endpoint for reading the current measurement of a sensor with a specific UUID
 def read_measurement(uuid: str) -> Response:
 
     for d in smarthouse.get_devices():
@@ -119,7 +119,7 @@ def read_measurement(uuid: str) -> Response:
 
     return Response(status_code=404)
 
-@app.put("/smarthouse/sensor/{uuid}/current")
+@app.put("/smarthouse/sensor/{uuid}/current")   # Endpoint for updating the current measurement of a sensor with a specific UUID
 def update_sensor_measurement(uuid: str, measurement: Measurement) -> Response:
 
     for d in smarthouse.get_devices():

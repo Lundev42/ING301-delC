@@ -28,7 +28,7 @@ class SensorClient:
         """
         logging.info(f"Sensor {self.did} measuring")
 
-        temp = round(math.sin(time.time() / 10) * TEMP_RANGE, 1)
+        temp = round(math.sin(time.time() / 10) * TEMP_RANGE, 1)    # Simulates a temperature measurement.
 
         logging.info(f"Sensor measured {self.did}: {temp}")
 
